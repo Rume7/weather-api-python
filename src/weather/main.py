@@ -8,6 +8,7 @@ def get_weather(city):
         "New York": "22°C and Sunny",
         "Lisbon": "25°C and Clear",
         "Paris": "22°C and Cloudy"
+        "Berlin": "11°C and Cloudy"
     }
     return data.get(city, "Weather data not available for this city.")
 
