@@ -39,4 +39,4 @@ jobs:
           python3 -m semantic_release version
           git push --follow-tags origin main
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
