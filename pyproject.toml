@@ -1,0 +1,12 @@
+[project]
+name = "weather-api-python"
+version = "1.0.0"
+description = "A simple CLI to check the weather"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "requests",
+]
+
+[project.scripts]
+weather-check = "weather.main:run"
