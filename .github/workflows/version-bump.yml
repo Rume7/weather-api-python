@@ -6,6 +6,14 @@ on:
   pull_request:
     branches: [ "main" ]
 
+on:
+  push:
+    branches:
+      - main
+      - test  # Add yours here
+      - pull request          # Or use a wildcard for all feature branches
+
+
 jobs:
   build:
     runs-on: ubuntu-latest
