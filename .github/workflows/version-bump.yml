@@ -5,13 +5,8 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
-on:
-  push:
-    branches:
-      - main
-      - test  # Add yours here
-      - pull request          # Or use a wildcard for all feature branches
+  pull_request:
+    branches: [ "test" ] 
 
 
 jobs:
