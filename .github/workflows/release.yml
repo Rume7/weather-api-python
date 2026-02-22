@@ -1,0 +1,44 @@
+name: Semantic Release
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    # Architect's Note: Permissions are the 'modern' way to handle tokens
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Architect Tip: Semantic-release needs the full history to calculate the next version
+
+      - name: Python Semantic Release
+        id: semantic
+        uses: python-semantic-release/python-semantic-release@v8.0.0
+        with:
+          # This uses the automatic GITHUB_TOKEN provided by GitHub Actions
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Now, we bundle the artifact only if a new version was actually created
+      - name: Build Artifact
+        if: steps.semantic.outputs.released == 'true'
+        run: |
+          python -m pip install build
+          python -m build
+          # Rename for clarity in Azure/Power Platform contexts
+          mv dist/*.whl python_backend_v${{ steps.semantic.outputs.version }}.whl
+
+      - name: Upload Component to GitHub Release
+        if: steps.semantic.outputs.released == 'true'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.semantic.outputs.version }}
+          files: ./*.whl
+          body: ${{ steps.semantic.outputs.tag_changelog }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
