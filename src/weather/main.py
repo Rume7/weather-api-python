@@ -6,7 +6,9 @@ def get_weather(city):
     data = {
         "London": "15°C and Cloudy",
         "New York": "22°C and Sunny",
-        "Lisbon": "25°C and Clear"
+        "Lisbon": "25°C and Clear",
+        "Paris": "22°C and Cloudy"
+        "Berlin": "11°C and Cloudy"
     }
     return data.get(city, "Weather data not available for this city.")
 
