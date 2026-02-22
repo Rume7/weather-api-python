@@ -10,3 +10,7 @@ dependencies = [
 
 [project.scripts]
 weather-check = "weather.main:run"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
