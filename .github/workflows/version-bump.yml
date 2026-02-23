@@ -2,7 +2,7 @@ name: CI (Lint and Test)
 
 on:
   pull_request:
-    branches: ["dev", "prod"]
+    branches: ["dev", "qa", "uat", "main"]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
