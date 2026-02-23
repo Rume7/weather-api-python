@@ -2,60 +2,40 @@ name: Test, Bump, and Tag
 
 on:
   push:
-    branches: ["dev", "qa", "uat", "main"]
+    branches:
+      - main
 
 jobs:
-  test:
-    name: Test
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-
-    steps:
-      - name: Checkout
-        run: |
-          git init .
-          git remote add origin "https://github.com/${{ github.repository }}.git"
-          git fetch --depth=1 origin "${{ github.ref_name }}"
-          git checkout FETCH_HEAD
-
-      - name: Install dependencies
-        run: |
-          python3 -m pip install --user --upgrade pip
-          python3 -m pip install pytest requests
-          python3 -m pip install -e .
-
-      - name: Run tests
-        run: python3 -m pytest tests/ -v
-
-  bump-and-tag:
-    name: Bump version and tag (main only)
-    needs: test
-    if: github.ref == 'refs/heads/main'
+  quality-and-tag:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
+    
     steps:
-      - name: Checkout (full history for semantic release)
+      # 1. Manual Checkout (Replaces actions/checkout)
+      - name: Manual Git Checkout
         run: |
           git init .
-          git remote add origin "https://github.com/${{ github.repository }}.git"
-          git fetch --depth=0 origin main
-          git checkout main
+          git remote add origin https://github.com
+          git fetch --depth=1 origin $GITHUB_SHA
+          git checkout FETCH_HEAD
 
+      # 2. Use System Python (Replaces actions/setup-python)
       - name: Install dependencies
         run: |
           python3 -m pip install --user pytest requests python-semantic-release
           python3 -m pip install -e .
 
-      - name: Run tests
-        run: python3 -m pytest tests/ -v
+      # 3. Policy: Run Tests
+      - name: Run Tests
+        run: python3 -m pytest
 
-      - name: Bump version and push tag
+      # 4. Versioning & Tagging
+      - name: Bump Version and Push Tag
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Using the installed semantic-release tool directly
           python3 -m semantic_release version
           git push --follow-tags origin main
         env:
